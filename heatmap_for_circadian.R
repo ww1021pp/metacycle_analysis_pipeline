@@ -25,9 +25,18 @@ GFP129_spe <- setdiff(GFP_129_meta_above_2$Transcript_ID,GFP_B6_meta_above_2$Tra
 intersect_spe <- intersect(GFP129_spe,intersect(GFP_B6$Transcript_ID, GFP_129$Transcript_ID))
 heatmap_data<-cbind(GFP_129[intersect_spe,45:50]/GFP_129[intersect_spe,"GFP129_max"],
                     GFP_B6[intersect_spe,45:50]/GFP_129[intersect_spe,"GFP129_max"])
+colnames(heatmap_data,paste0("GFP_129.",colnames(GFP_129)[45:50]),
+                      paste0("GFP_B6.",colnames(GFP_B6)[45:50]))
 
 write.table(heatmap_data,"GFP_129_diff_B6_circadian_gene.txt", sep = "\t",
             quote = F,na="NA",row.names = F)
+
+#sort the heat data by each time points and selected top n genes as following steps:
+#step 1: sort the firt time pints with descending order and selected top n genes.
+# step 2: sort the retained genes by second time point and  selected top genes.
+# step 3: repeat the above steps untill sort all time points and 
+
+
 
 
 heat_data <- read.delim("GFP_129_diff_B6_circadian_gene_sorted_byGFP129.txt",
