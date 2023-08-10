@@ -1,3 +1,5 @@
+# heatmap_for_circadian.R
+```
 rm(list=ls())
 
 setwd("/workspace/rsrch2/panpanliu/project/RNA-seq/20_RNAseq.12W.HFD.EsrrgF.129Male/20_21_circadian_analysis/all_quatile/")
@@ -35,7 +37,7 @@ write.table(heatmap_data,"GFP_129_diff_B6_circadian_gene.txt", sep = "\t",
 # step 1: sort the firt time pints with descending order and selected top n genes.
 # step 2: sort the retained genes by second time point and  selected top genes.
 # step 3: repeat the above steps untill sort all time points and all transcript
- after sort data by above steps, we can use pheatmap get a figure
+# after sort data by above steps, we can use pheatmap get a figure
 
 
 
@@ -50,6 +52,8 @@ palette.breaks <- seq(0,1,0.02)
 color.palette  <- colorRampPalette(c("blue","black", "yellow"))(length(palette.breaks) - 1)
 
 pheatmap(heat_data,breaks =palette.breaks,color = color.palette,cluster_rows = F,cluster_cols = F,show_rownames = F)
+```
+![image](https://github.com/ww1021pp/ww1021pp/assets/60449311/2ccec8d2-d62c-4f57-8e1d-0f0b35e427f6)
 
 
 
