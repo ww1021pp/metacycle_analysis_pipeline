@@ -31,11 +31,11 @@ colnames(heatmap_data,paste0("GFP_129.",colnames(GFP_129)[45:50]),
 write.table(heatmap_data,"GFP_129_diff_B6_circadian_gene.txt", sep = "\t",
             quote = F,na="NA",row.names = F)
 
-#sort the heat data by each time points and selected top n genes as following steps:
-#step 1: sort the firt time pints with descending order and selected top n genes.
+## sort the heat data by each time points and selected top n genes as following steps:
+# step 1: sort the firt time pints with descending order and selected top n genes.
 # step 2: sort the retained genes by second time point and  selected top genes.
-# step 3: repeat the above steps untill sort all time points and 
-
+# step 3: repeat the above steps untill sort all time points and all transcript
+ after sort data by above steps, we can use pheatmap get a figure
 
 
 
@@ -50,4 +50,7 @@ palette.breaks <- seq(0,1,0.02)
 color.palette  <- colorRampPalette(c("blue","black", "yellow"))(length(palette.breaks) - 1)
 
 pheatmap(heat_data,breaks =palette.breaks,color = color.palette,cluster_rows = F,cluster_cols = F,show_rownames = F)
+
+
+
 
