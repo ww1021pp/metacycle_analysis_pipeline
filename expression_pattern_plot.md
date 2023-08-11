@@ -10,6 +10,7 @@ the format is (transcripts*sample) with transcripts annotation information
 
 ![image](https://github.com/ww1021pp/metacycle_analysis_pipeline/assets/60449311/f41b97b4-1b25-4851-bc82-680a2a9e779f)
 
+## expression_pattern_plots.R
 
 ```
 rm(list=ls())
