@@ -1,5 +1,7 @@
-metacycle analysis for time series expression data to predict circadian genes/transcripts
-This is a script used to detect circadian genes from quantile expression value got from Homer analysisRepeat.pl
+# metacycle analysis to predict circadian geness pipiline for time-series data with R
+
+### metacycle analysis for time series expression data to predict circadian genes/transcripts
+### This is a script used to detect circadian genes from quantile expression value got from Homer analysisRepeat.pl
 
 ```
 rm(list=ls())
@@ -79,12 +81,12 @@ Cre_129_Exp=read.csv("./ErrgCreHFD\\.129.csv")
 head(Cre_129_Exp);dim(Cre_129_Exp)
 Cre_129_results=cbind(raw[,1:8],raw$Symbol,Cre_129[,-1],Cre_129_Exp[,-1],raw[,grepl("ZT[0-9]+_Cre",colnames(raw))])
 save(Cre_129_results,file=paste("meta_out","Cre_129","rda",sep="."))
-write.table(Cre_129_results,file=paste("meta_out","Cre_129","txt",sep="."),row.names=F,quote = F,sep = "\t")
+write.table(Cre_129_results,file=paste("meta_out","Cre_129","txt",sep="."),row.names=F,quote = F,sep = "\t",na="")
 
 GFP_129=read.csv("./ErrgGFPHFD\\.129_metacycle_res/ErrgGFPHFD\\.129meta2d_.129.csv",header=TRUE)
 GFP_129_Exp=read.csv("./ErrgGFPHFD\\.129.csv")
 GFP_129_results=cbind(raw[,1:8],raw$Symbol,GFP_129[,-1],GFP_129_Exp[,-1],raw[,grepl("ZT[0-9]+_GFP",colnames(raw))])
 save(GFP_129_results,file=paste("meta_out","GFP_129","rda",sep="."))
-write.table(GFP_129_results,file=paste("meta_out","GFP_129","txt",sep="."),row.names=F,quote=F,sep = "\t")
+write.table(GFP_129_results,file=paste("meta_out","GFP_129","txt",sep="."),row.names=F,quote=F,sep = "\t",na="")
 
 ```
