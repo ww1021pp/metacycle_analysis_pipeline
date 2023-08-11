@@ -7,7 +7,7 @@
 rm(list=ls())
 setwd("/workspace/rsrch2/panpanliu/project/RNA-seq/20_RNAseq.12W.HFD.EsrrgF.129Male/circadian_analysis") ## set work directory
 
-library(MetaCycle)               ## import libarary 
+library(MetaCycle)            ## import libarary 
 GFP_129_raw<-read.delim("../4_homer/ErrgGFP_129_quatile.txt")  ## import the counts table 
 Cre_129_raw<-read.delim("../4_homer/ErrgCre_129_quatile.txt")
 colnames(GFP_129_raw)[1]="Transcript_ID"
