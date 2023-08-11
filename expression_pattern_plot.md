@@ -182,3 +182,5 @@ arrange_pred=annotate_figure(arrange_pred, left = textGrob("quantie expresseion 
 ggsave(paste0("interested_genes_quan.pdf"), arrange_pred, width = 15, height = 15)
 
 ```
+![image](https://github.com/ww1021pp/metacycle_analysis_pipeline/assets/60449311/7652ab7f-511e-4895-947e-63983d7fdd93)
+
