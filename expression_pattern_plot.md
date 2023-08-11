@@ -2,29 +2,36 @@
 
 
 ## for the inout file are homer expression table 
+
 the format is (transcripts*sample) with transcripts annotation information
+
+![image](https://github.com/ww1021pp/metacycle_analysis_pipeline/assets/60449311/317fab9b-5f46-4323-95f5-cf170bcf5c46)
+
+
+![image](https://github.com/ww1021pp/metacycle_analysis_pipeline/assets/60449311/f41b97b4-1b25-4851-bc82-680a2a9e779f)
+
 
 ```
 rm(list=ls())
-setwd("~/Documents/DY_RNA_Seq_4_8_19/4_B6_129_NC_HFD_RNAseq-206142945/circadian_analysis1")
+setwd("/home/chunjie/Documents/DY_RNA_Seq_4_8_19/4_B6_129_NC_HFD_RNAseq-206142945/circadian_analysis1") ##set the work directory
 
 #raw <- read.delim("../4_homer/normlization.txt", sep="\t", fill=T, h=T)
-raw <- read.delim("../4_homer/quatile.txt",fill=T, h=T)
+raw <- read.delim("../4_homer/quatile.txt",fill=T, h=T) ## import data file (homer expression files)
 
-colnames(raw)=gsub("\\.reads.*","",colnames(raw))
-colnames(raw)[1]="Transcript_ID"
-tags<-c("NC\\.129","HF\\.129","NC.B6","HF.B6")
-raw$Symbol<-sapply(strsplit(as.character(raw$Annotation), "\\|"), "[", 1)
-raw<-raw[which(raw$Symbol !="0.000"),]
-head(raw)
+colnames(raw)=gsub("\\.reads.*","",colnames(raw))  ## set colname for each column
+colnames(raw)[1]="Transcript_ID" 
+tags<-c("NC\\.129","HF\\.129","NC.B6","HF.B6")  ## condition group 
+raw$Symbol<-sapply(strsplit(as.character(raw$Annotation), "\\|"), "[", 1) ## gene symbol
+raw<-raw[which(raw$Symbol !="0.000"),] ## filter transcript without gene symbol
+head(raw)  
 dim(raw)
 
-library(ggpubr)
-library(stringr)
-library(reshape2)
+library(ggpubr)    ## if dont want to show the massege, we can use suppressMessages(library(ggpubr)) to load a library 
+library(stringr)   
+library(reshape2)  ## use to transfer short frame to long data frame
 library(matrixStats)
-raw_data= raw
-raw=raw[,-56]
+raw_data= raw  
+raw=raw[,-56] 
 
 sd=data.frame(
   
@@ -76,59 +83,55 @@ sd=data.frame(
   ZT14_HF_129_sd =rowSds(as.matrix(raw[,grepl(pattern = "HF\\.129\\.ZT14\\.",colnames(raw))]))/sqrt(sum(grepl(pattern = "HF\\.129\\.ZT14\\.",colnames(raw)))),
   ZT18_HF_129_sd =rowSds(as.matrix(raw[,grepl(pattern = "HF\\.129\\.ZT18\\.",colnames(raw))]))/sqrt(sum(grepl(pattern = "HF\\.129\\.ZT18\\.",colnames(raw)))),
   ZT22_HF_129_sd =rowSds(as.matrix(raw[,grepl(pattern = "HF\\.129\\.ZT22\\.",colnames(raw))]))/sqrt(sum(grepl(pattern = "HF\\.129\\.ZT22\\.",colnames(raw))))
-   )
+   ) ## canculate each sample mean and stand devide
 head(sd)
 dim(sd)
-sd=cbind(raw$Transcript_ID,raw$Symbol,sd)
-colnames(sd)[1:2]=c("Transcript_ID","Symbol")
+sd=cbind(raw$Transcript_ID,raw$Symbol,sd) ## combined gene and corresponding gene expression sd and mean
+colnames(sd)[1:2]=c("Transcript_ID","Symbol") ## set column name for the first two column
 
+### begin to set plot data
 
+suppressMessages(library(R.utils))  ## supressed library information
 
-#####fileter low expression genes by condition avarage expression gt>1, AT LEAST  half condition expression >filter_value#####
-#raw[,"count"] <- rowSums(sd[,]>3)
-#keep=raw$count>12
-#raw <- raw[keep,];dim(raw)
-#sd<-sd[keep,];head(sd);dim(sd)
-
-library(R.utils)
-
-core_genes<-read.csv("17clocklist.txt",stringsAsFactors = FALSE,header = F)
-
-core_genes$mouse<-tolower(core_genes$V1)
-tar_genes<-capitalize(core_genes$mouse)
+core_genes<-read.csv("17clocklist.txt",stringsAsFactors = FALSE,header = F)  ### load the genes we are interested that we want to plot
+core_genes$mouse<-tolower(core_genes$V1)     ## make sure gene name are in the same case(TO lower or upper case, make the same pattern)
+tar_genes<-capitalize(core_genes$mouse)     
 tar_genes<-c("Sntg2","Taok3","Atf1")
-expressed_genes<-intersect(tar_genes,raw$Symbol)
-genes_matrix<-raw[which(raw$Symbol %in% expressed_genes),]
+expressed_genes<-intersect(tar_genes,raw$Symbol) 
+genes_matrix<-raw[which(raw$Symbol %in% expressed_genes),]  ## ectract target gene expression matrix
 genes_matrix<-genes_matrix[order(genes_matrix$Symbol,genes_matrix$Length,decreasing=TRUE),]
 Trans_ID=genes_matrix$Transcript_ID
 
-library(reshape2)
-
+library(reshape2)    
 rownames(genes_matrix) <- genes_matrix[,1]
 name <- colnames(genes_matrix)
-name_exp<-str_detect(name,'\\.ZT[0-9].*')
-dat_exp <- genes_matrix[,name_exp]
-##########################gene_expression line plot ############
+name_exp<-str_detect(name,'\\.ZT[0-9].*')  ## extract the pattern name column 
+dat_exp <- genes_matrix[,name_exp]   ## extract sample expression 
 
+##########################gene_expression line plot ##############
 dat_exp <- cbind(genes_matrix[,c("Transcript_ID","Symbol")],dat_exp)
 colnames(dat_exp)[1:2]=c("Transcript_ID","Symbol")
-dat_plot <- reshape2::melt(dat_exp,id  = c("Transcript_ID","Symbol"))
+dat_plot <- reshape2::melt(dat_exp,id  = c("Transcript_ID","Symbol"))  ## melt() function from the reshape2 package in R to convert a data frame from a wide
+format to a long format
+
+
+
 head(dat_plot)
 dat_plot$group<-factor(sapply(strsplit(as.character(dat_plot$variable), "\\.ZT"), "[", 1),levels = c("NC.B6","HF.B6","NC.129","HF.129"),
-                       labels = c("NC_B6","HF_B6","NC_129","HF_129"))
+                       labels = c("NC_B6","HF_B6","NC_129","HF_129"))  ## set the group factor for each condition
 
 
-dat_plot$time<-factor(gsub(".*ZT","",gsub("\\.R.*","",dat_plot$variable)),levels = c("2","6","10","14","18","22"))
+dat_plot$time<-factor(gsub(".*ZT","",gsub("\\.R.*","",dat_plot$variable)),levels = c("2","6","10","14","18","22")) 
 head(dat_plot)
 dat_plot$Transcript_ID=as.factor(dat_plot$Transcript_ID)
 ########################################line_plot for each genes and time####
 #############################################################################
-mean_Exp<-sd[which(raw$Symbol %in% tar_genes),grepl(pattern = "^ZT.*[69]$",colnames(sd))]
+mean_Exp<-sd[which(raw$Symbol %in% tar_genes),grepl(pattern = "^ZT.*[69]$",colnames(sd))] 
 mean_Exp<-cbind(sd[which(raw$Symbol %in% tar_genes),c("Transcript_ID","Symbol")],mean_Exp)
 mean_plot <- reshape2::melt(mean_Exp,id  = c("Transcript_ID","Symbol"),value.name = "mean")
 mean_plot$group=factor(gsub("ZT[0-9]+_","",mean_plot$variable),levels = c("NC_B6","HF_B6","NC_129","HF_129"))
 mean_plot$time=factor(gsub("ZT","",gsub("_.*","",mean_plot$variable)),levels = c("2","6","10","14","18","22"))
-head(mean_plot)
+head(mean_plot) 
 
 Exp_sd<-sd[which(raw$Symbol %in% tar_genes),grepl(pattern = "sd",colnames(sd))]
 Exp_sd<-cbind(sd[which(raw$Symbol %in% tar_genes),c("Transcript_ID","Symbol")],Exp_sd)
