@@ -2,6 +2,10 @@
 
 ### metacycle analysis for time series expression data to predict circadian genes/transcripts
 ### This is a script used to detect circadian genes from quantile expression value got from Homer analysisRepeat.pl
+![image](https://github.com/ww1021pp/metacycle_analysis_pipeline/assets/60449311/97627478-57fa-4469-9569-41fdf68048f8)
+
+![image](https://github.com/ww1021pp/metacycle_analysis_pipeline/assets/60449311/754f0f21-48a5-44ce-8287-20c935606150)
+
 
 ```
 rm(list=ls())
@@ -11,9 +15,10 @@ library(MetaCycle)            ## import libarary
 GFP_129_raw<-read.delim("../4_homer/ErrgGFP_129_quatile.txt")  ## import the counts table 
 Cre_129_raw<-read.delim("../4_homer/ErrgCre_129_quatile.txt")
 colnames(GFP_129_raw)[1]="Transcript_ID"
-colnames(Cre_129_raw)[1]="Transcript_ID"
+colnames(Cre_129_raw)[1]="Transcript_ID"   ## names each column with our own defination
 
-rownames(GFP_129_raw)=GFP_129_raw$Transcript_ID
+rownames(GFP_129_raw)=GFP_129_raw$Transcript_ID   ## name each row with transcript ID to extract the interested gene 
+
 rownames(Cre_129_raw)=Cre_129_raw$Transcript_ID ## names each row with transcript/gene ID
 count_GFP_129=GFP_129_raw[,9:26]         ## extract count table
 
